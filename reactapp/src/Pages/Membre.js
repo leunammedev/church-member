@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-
 import axios from 'axios';
+
+import swal from 'sweetalert';
+
 
 class Membre extends Component
 {
@@ -23,6 +25,26 @@ class Membre extends Component
         }
     }
 
+    deleteMembre = async (e, id) => {
+        const thidClickedfunda = e.currentTarget;
+        thidClickedfunda.innerText = "Suppression";
+
+        const res = await axios.delete(`http://localhost:8000/api/delete-membre/${id}`);
+        if(res.data.status ===200)
+        {
+            thidClickedfunda.closest("tr").remove();
+            // console.log(res.data.message);
+            swal({
+                title: "Supprimer!",
+                text: res.data.message,
+                icon: "success",
+                button: "OK!",
+            });
+
+        }
+    }
+
+
     render() {
 
         var membre_HTMLTABLE = "";
@@ -43,10 +65,11 @@ class Membre extends Component
                         <td>{item.contact}</td>
                         <td>{item.mode}</td>
                         <td>
-                            <Link to={`modifier-membre/${item.id}`} className="btn btn-success btn-sm">Modifier</Link>
+                            {/* <Link to={`modifier-membre/${item.id}`} className="btn btn-success btn-sm">Modifier</Link> */}
+                            <a href= {`modifier-membre/${item.id}`} className="btn btn-success btn-sm">Modifier</a>
                         </td>
                         <td>
-                            <button type="button" className="btn btn-danger btn-sm">Supprimer</button>
+                            <button type="button" onClick={(e) => this.deleteMembre(e, item.id)} className="btn btn-danger btn-sm">Supprimer</button>
                         </td>
                     </tr>
                 );
@@ -61,7 +84,8 @@ class Membre extends Component
                         <div className="card">
                             <div className="card-header">
                                 <h4>Donnee Des Membres
-                                    <Link to={'ajouter-membre'} className="btn btn-primary btn-sm float-end"> Ajouter membre</Link>
+                                    {/* <Link to={'ajouter-membre'} className="btn btn-primary btn-sm float-end"> Ajouter membre</Link> */}
+                                    <a href='/ajouter-membre' className="btn btn-primary btn-sm float-end"> Ajouter membre</a>
                                 </h4>
                             </div>
                             <div className="card-body">
